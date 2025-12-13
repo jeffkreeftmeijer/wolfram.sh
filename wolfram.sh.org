@@ -1,0 +1,116 @@
+* Set the initial state
+
+The simulation emerges from an initial configuration of cells, which represent the first generation.
+Because the elementary cellular automaton is one-dimensional, its state can be represented as an array.
+
+To generate an initial state, first determine the width of the simulation.
+In this case, call ~tput cols~ to get the number of columns in the terminal window.
+
+#+caption: Define the ~width~ variable, and set it to the number of columns in the terminal window.
+#+name: define-width-variable
+#+begin_src bash
+width=$(tput cols)
+#+end_src
+
+With the ~width~ set, generate the initial state by populating an array with zeroes.
+There is one live cell in the middle, represented by a 1 as the middle array element.
+
+#+caption: Set the initial state to an array of zeroes with a single 1 in the middle.
+#+name: set-initial-state
+#+begin_src bash
+for ((i=0;i<=width-1;i++)); do
+    state+=($((i == width/2)))
+done
+#+end_src
+
+<<initial-state>>
+For example, running the code above in a terminal that's 9 cells wide produces an initial state with a width of 9 cells, with a single live cell in the middle:
+
+#+header: :cache yes
+#+header: :exports results
+#+header: :noweb yes
+#+header: :results verbatim
+#+header: :wrap example
+#+begin_src bash
+#!/usr/bin/env bash
+
+width=9
+
+<<set-initial-state>>
+
+echo "(${state[@]})"
+#+end_src
+
+#+RESULTS[6646493224cfc39d539ba69dcc408b50265fb40b]:
+#+begin_example
+(0 0 0 0 1 0 0 0 0)
+#+end_example
+
+* Draw the current state
+
+The ~draw~ function prints the current state.
+Whenever it's called, it prints a line with either ~█~ or a space for each cell in the generation.
+
+#+header: :exports none
+#+name: define-live-and-dead-variables
+#+begin_src bash
+live="█"
+dead=" "
+#+end_src
+
+#+header: :exports none
+#+name: define-draw-function
+#+begin_src bash
+draw() {
+    local line=""
+    for value in "$@"; do
+          line+=$([ "$value" -eq 1 ] && echo "$live" || echo "$dead");
+    done
+    printf "%b" "${line}"
+}
+#+end_src
+
+#+caption: Define the ~draw()~ function
+#+header: :noweb yes
+#+begin_src bash
+<<define-live-and-dead-variables>>
+
+<<define-draw-function>>
+#+end_src
+
+To draw the current ~state~, pass it to the ~draw()~ function as an array.
+
+#+name: draw-initial-generation
+#+begin_src bash
+draw "${state[@]}"
+#+end_src
+
+With the initial state, the ~draw()~ function prints a single box in the middle of the screen to represent a single living cell.
+
+#+header: :cache yes
+#+header: :exports results
+#+header: :noweb yes
+#+header: :results verbatim
+#+header: :wrap example
+#+header: :tangle wolfram.sh
+#+begin_src bash
+#!/usr/bin/env bash
+
+<<define-draw-function>>
+
+<<define-width-variable>>
+<<define-live-and-dead-variables>>
+
+<<set-initial-state>>
+
+<<draw-initial-generation>>
+#+end_src
+
+#+RESULTS[336748c5d231fee360fce11861196c37ea70f517]:
+#+begin_example
+                                        █                                       
+#+end_example
+
+# Local Variables:                                             
+# org-src-preserve-indentation: t
+# End:
