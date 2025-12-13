@@ -12,6 +12,13 @@ width=$(tput cols)
 live="█"
 dead=" "
 
+while getopts "w:" flag; do
+    case "$flag" in
+	'w') width=$OPTARG;;
+	*) exit
+    esac
+done
+
 for ((i=0;i<=width-1;i++)); do
     state+=($((i == width/2)))
 done

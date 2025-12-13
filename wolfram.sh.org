@@ -92,7 +92,6 @@ With the initial state, the ~draw()~ function prints a single box in the middle 
 #+header: :noweb yes
 #+header: :results verbatim
 #+header: :wrap example
-#+header: :tangle wolfram.sh
 #+begin_src bash
 #!/usr/bin/env bash
 
@@ -110,6 +109,46 @@ With the initial state, the ~draw()~ function prints a single box in the middle 
 #+begin_example
                                         █                                       
 #+end_example
+
+* Testing
+
+The program is tested with [[https://github.com/bats-core/bats-core][bats]], a testing framework for bash.
+
+** Command line options for testing
+
+The program includes command line options to aid with testing.
+
+The ~-w~ option sets the ~width~ variable, which represents the width of the simulation for scenarios where the width can't be determined automatically, or when it's inconvenient to do so.
+
+#+name: command-line-options-for-testing
+#+begin_src bash
+while getopts "w:" flag; do
+    case "$flag" in
+	'w') width=$OPTARG;;
+	*) exit
+    esac
+done
+#+end_src
+
+* Result :noexport:
+
+#+header: :noweb yes
+#+header: :tangle wolfram.sh
+#+header: :eval no
+#+begin_src bash
+#!/usr/bin/env bash
+
+<<define-draw-function>>
+
+<<define-width-variable>>
+<<define-live-and-dead-variables>>
+
+<<command-line-options-for-testing>>
+
+<<set-initial-state>>
+
+<<draw-initial-generation>>
+#+end_src
 
 # Local Variables:                                             
 # org-src-preserve-indentation: t
