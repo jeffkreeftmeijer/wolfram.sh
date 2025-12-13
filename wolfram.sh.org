@@ -97,17 +97,18 @@ With the initial state, the ~draw()~ function prints a single box in the middle 
 
 <<define-draw-function>>
 
-<<define-width-variable>>
-<<define-live-and-dead-variables>>
+width=41
+live="█"
+dead="░"
 
 <<set-initial-state>>
 
 <<draw-initial-generation>>
 #+end_src
 
-#+RESULTS[336748c5d231fee360fce11861196c37ea70f517]:
+#+RESULTS[734f6e49985149b0174dc450e29f2ba63dc686ef]:
 #+begin_example
-                                        █                                       
+░░░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░
 #+end_example
 
 * Testing
