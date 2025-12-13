@@ -85,7 +85,7 @@ To draw the current ~state~, pass it to the ~draw()~ function as an array.
 draw "${state[@]}"
 #+end_src
 
-With the initial state, the ~draw()~ function prints a single box in the middle of the screen to represent a single living cell.
+With the [[initial-state][initial state]] state, the ~draw()~ function prints a single box in the middle of the screen to represent a single living cell.
 
 #+header: :cache yes
 #+header: :exports results
@@ -97,7 +97,7 @@ With the initial state, the ~draw()~ function prints a single box in the middle 
 
 <<define-draw-function>>
 
-width=41
+width=9
 live="█"
 dead="░"
 
@@ -106,9 +106,9 @@ dead="░"
 <<draw-initial-generation>>
 #+end_src
 
-#+RESULTS[734f6e49985149b0174dc450e29f2ba63dc686ef]:
+#+RESULTS[e5440cc42527ad506324c9ec7f71bc1834e08b85]:
 #+begin_example
-░░░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░
+░░░░█░░░░
 #+end_example
 
 * Testing
