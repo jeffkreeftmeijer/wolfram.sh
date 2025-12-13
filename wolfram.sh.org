@@ -114,6 +114,11 @@ dead="░"
 * Testing
 
 The program is tested with [[https://github.com/bats-core/bats-core][bats]], a testing framework for bash.
+To run the tests, evaluate ~test.bats~.
+
+#+begin_src bash
+./test.bats
+#+end_src
 
 ** Command line options for testing
 
