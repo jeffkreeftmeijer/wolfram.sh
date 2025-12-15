@@ -193,19 +193,22 @@ For this, it needs to know which rule to use, and how many generations to print.
 
 By default, one of the 256 rules is chosen at random.
 The ~generations~ variable is set to 0, which means the program keeps printing new generations until it's terminated manually.
+Finally, ~delay~ variable is set to 0.1, which determines how long the program sleeps between drawing generations.
 
-#+name: define-rule-and-generations-variables
+#+name: define-rule-generations-and-delay-variables
 #+begin_src bash
 rule=$((RANDOM % 256))
 generations=0
+delay=0.1
 #+end_src
 
-Both the ~rule~ and ~generations~ variables are configurable, through the ~-r~ and ~-g~ command line options, respectively.
+The ~rule~, ~generations~ and ~delay~ variables are configurable, through the ~-r~, ~-g~, and ~-d~ command line options, respectively.
 
 #+name: command-line-options
 #+begin_src bash
-while getopts "g:r:w:" flag; do
+while getopts "d:g:r:w:" flag; do
     case "$flag" in
+	'd') delay=$OPTARG;;
 	'g') generations=$OPTARG;;
 	'r') rule=$OPTARG;;
 	'w') width=$OPTARG;;
@@ -222,6 +225,7 @@ With everything set up, the program can print generations by populating a ~new_s
 count=1
 
 while [ "$generations" = 0 ] || [ $count -lt "$generations" ]; do
+    sleep "$delay"
     new_state=()
 
     for ((i=0;i<=width-1;i++)); do
@@ -259,7 +263,7 @@ To run the tests, evaluate ~test.bats~.
 
 <<define-width-variable>>
 <<define-live-and-dead-variables>>
-<<define-rule-and-generations-variables>>
+<<define-rule-generations-and-delay-variables>>
 
 <<command-line-options>>
 

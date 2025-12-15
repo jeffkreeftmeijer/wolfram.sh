@@ -13,9 +13,11 @@ live="█"
 dead=" "
 rule=$((RANDOM % 256))
 generations=0
+delay=0.1
 
-while getopts "g:r:w:" flag; do
+while getopts "d:g:r:w:" flag; do
     case "$flag" in
+	'd') delay=$OPTARG;;
 	'g') generations=$OPTARG;;
 	'r') rule=$OPTARG;;
 	'w') width=$OPTARG;;
@@ -38,6 +40,7 @@ draw "${state[@]}"
 count=1
 
 while [ "$generations" = 0 ] || [ $count -lt "$generations" ]; do
+    sleep "$delay"
     new_state=()
 
     for ((i=0;i<=width-1;i++)); do
