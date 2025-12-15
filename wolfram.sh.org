@@ -51,14 +51,15 @@ An [[https://en.wikipedia.org/wiki/Elementary_cellular_automaton][elementary cel
 
 An interesting use of wolfram.sh is using it as a "terminal screensaver".
 
-An example using Alacritty opens the terminal in full screen mode, decreases the font size to increase the resolution, and disables the history:
+An example using Alacritty opens the terminal in full screen mode, decreases the font size to increase the resolution, and disables the history.
+It then starts the program with a random pick from a selection of interesting rules:
 
 #+begin_src bash
 alacritty --option font.size=2 \
           --option font.offset={x=3} \
 	  --option window.startup_mode='"Fullscreen"' \
 	  --option scrolling.history=0 \
-	  --command ./wolfram.sh
+	  --command ./wolfram.sh -r $(shuf -e 30 45 60 90 110 150 -n 1)
 #+end_src
 
 * Implementation
