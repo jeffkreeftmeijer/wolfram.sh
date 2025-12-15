@@ -13,7 +13,6 @@ width=$(tput cols)
 
 The width is set to the number of columns in the terminal window, but it can be configured with the ~-w~ flag.
 
-#+name: command-line-options
 #+begin_src bash
 while getopts "w:" flag; do
     case "$flag" in
@@ -122,6 +121,123 @@ dead="░"
 ░░░░█░░░░
 #+end_example
 
+* Calculate cell values
+
+To determine the next state of a cell, the program considers the cell's /neighborhood/ in the previous generation.
+In the elementary cellular automaton, a cell's neighborhood consists of the cell in the same position in the previous generation, and the cell on the left and right of it.
+
+#+caption: Set the neighborhood for a cell by taking the previous generation's cell value, and the values of the cells to the left and right of it. 
+#+name: set-neighborhood
+#+begin_src bash
+neighborhood=$((state[i-1]))$((state[i]))$((${state[i+1]:-${state[0]}}))
+#+end_src
+
+When determining the state of the 5th cell in the second generation, the 4th, 5th and 6th cell in the previous generation are considered its neighborhood.
+For example, using the [[initial-state][initial state]], calculating the neighborhood for the 5th element of the second generation:
+
+#+header: :cache yes
+#+header: :exports results
+#+header: :noweb yes
+#+header: :results verbatim
+#+begin_src bash
+state=(0 0 0 0 1 0 0 0 0)
+i=4
+<<set-neighborhood>>
+echo "${neighborhood}"
+#+end_src
+
+#+RESULTS[92e7b46ab439139c6392bb8e7c7d3555830217a9]:
+: 010
+
+After finding the neighborhood, a /rule/ is applied to decide what the next state should be.
+
+There are 256 rules in the elementary cellular automaton, each one derived from is binary representation.
+To extract the rule set, the rule number is converted to binary, split into an array, and finally reversed.
+
+#+name: set-ruleset
+#+begin_src bash
+ruleset=(0 0 0 0 0 0 0 0)
+for i in {0..7}; do
+    ruleset[i]=$((rule % 2))
+    rule=$((rule / 2))
+done
+#+end_src
+
+For example, setting the ~rule~ variable to 30 produces the ruleset for [[https://en.wikipedia.org/wiki/Rule_30][rule 30]]:
+
+#+header: :cache yes
+#+header: :exports results
+#+header: :noweb yes
+#+header: :results verbatim
+#+begin_src bash
+rule=30
+<<set-ruleset>>
+echo "(${ruleset[@]})"
+#+end_src
+
+#+RESULTS[5b566c902709a1993d2b6f09ca21f4ba798ee6d2]:
+: (0 1 1 1 1 0 0 0)
+
+Finally, with both the ~ruleset~ and ~neighborhood~ set, calculate the value for the new cell and add it to a new array named ~new_state~.
+This is done by converting the neighborhood to a decimal value, and using that value as the index to look up the new value in ~ruleset~ array.
+
+#+name: add-to-new-state
+#+begin_src bash
+new_state+=("${ruleset[$((2#$neighborhood))]}")
+#+end_src
+
+* Print new generations
+
+Now that we have the logic to create a ruleset from a rule number and a way to calculate new generation cell values, the program can print new generations in a loop.
+For this, it needs to know which rule to use, and how many generations to print.
+
+By default, one of the 256 rules is chosen at random.
+The ~generations~ variable is set to 0, which means the program keeps printing new generations until it's terminated manually.
+
+#+name: define-rule-and-generations-variables
+#+begin_src bash
+rule=$((RANDOM % 256))
+generations=0
+#+end_src
+
+Both the ~rule~ and ~generations~ variables are configurable, through the ~-r~ and ~-g~ command line options, respectively.
+
+#+name: command-line-options
+#+begin_src bash
+while getopts "g:r:w:" flag; do
+    case "$flag" in
+	'g') generations=$OPTARG;;
+	'r') rule=$OPTARG;;
+	'w') width=$OPTARG;;
+	*) exit
+    esac
+done
+#+end_src
+
+With everything set up, the program can print generations by populating a ~new_state~ array, populating it, replacing the ~state~ variable, and then printing the new state with the ~draw()~ function in a loop.
+
+#+name: draw-new-generations-in-a-loop
+#+header: :noweb yes
+#+begin_src bash
+count=1
+
+while [ "$generations" = 0 ] || [ $count -lt "$generations" ]; do
+    new_state=()
+
+    for ((i=0;i<=width-1;i++)); do
+	<<set-neighborhood>>
+        <<add-to-new-state>>
+    done
+
+    state=("${new_state[@]}")
+
+    printf "\n"
+    draw "${state[@]}"
+
+    ((count++))
+done
+#+end_src
+
 * Testing
 
 The program is tested with [[https://github.com/bats-core/bats-core][bats]], a testing framework for bash.
@@ -143,12 +259,17 @@ To run the tests, evaluate ~test.bats~.
 
 <<define-width-variable>>
 <<define-live-and-dead-variables>>
+<<define-rule-and-generations-variables>>
 
 <<command-line-options>>
+
+<<set-ruleset>>
 
 <<set-initial-state>>
 
 <<draw-initial-generation>>
+
+<<draw-new-generations-in-a-loop>>
 #+end_src
 
 # Local Variables:                                             
