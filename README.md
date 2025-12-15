@@ -1,14 +1,23 @@
-- [Usage](#orgebbc4ea)
-- [Implementation](#orgda39cff)
-  - [Set the initial state](#orgf0a1115)
-  - [Draw the current state](#orge2835c4)
-  - [Calculate cell values](#orgab8583d)
-  - [Print new generations](#orgdb11da1)
-  - [Hide the cursor](#org57085e3)
-- [Testing](#org17fb00b)
+
+# wolfram.sh
+
+An [elementary cellular automaton](https://en.wikipedia.org/wiki/Elementary_cellular_automaton), based on the [Wolfram code](https://en.wikipedia.org/wiki/Wolfram_code) and implemented as a shell script.
 
 
-<a id="orgebbc4ea"></a>
+## Table of Contents
+
+1.  [Usage](#orgc3a7d26)
+    1.  [As a terminal screensaver](#org8f7ec15)
+2.  [Implementation](#org03949c6)
+    1.  [Set the initial state](#org544af2c)
+    2.  [Draw the current state](#org44ee361)
+    3.  [Calculate cell values](#org3ae546c)
+    4.  [Print new generations](#org227a091)
+    5.  [Hide the cursor](#orgb84b07a)
+3.  [Testing](#org9fef3f7)
+
+
+<a id="orgc3a7d26"></a>
 
 ## Usage
 
@@ -39,12 +48,29 @@
 ```
 
 
-<a id="orgda39cff"></a>
+<a id="org8f7ec15"></a>
+
+### As a terminal screensaver
+
+An interesting use of wolfram.sh is using it as a &ldquo;terminal screensaver&rdquo;.
+
+An example using Alacritty opens the terminal in full screen mode, decreases the font size to increase the resolution, and disables the history. It then starts the program with a random pick from a selection of interesting rules:
+
+```bash
+alacritty --option font.size=2 \
+          --option font.offset={x=3} \
+          --option window.startup_mode='"Fullscreen"' \
+          --option scrolling.history=0 \
+          --command ./wolfram.sh -r $(shuf -e 30 45 60 90 110 150 -n 1)
+```
+
+
+<a id="org03949c6"></a>
 
 ## Implementation
 
 
-<a id="orgf0a1115"></a>
+<a id="org544af2c"></a>
 
 ### Set the initial state
 
@@ -75,18 +101,18 @@ for ((i=0;i<=width-1;i++)); do
 done
 ```
 
-<a id="org053b775"></a> For example, running the code above in a terminal that's 9 cells wide produces an initial state with a width of 9 cells, with a single live cell in the middle:
+<a id="orge8378ec"></a> For example, running the code above in a terminal that&rsquo;s 9 cells wide produces an initial state with a width of 9 cells, with a single live cell in the middle:
 
 ```
 (0 0 0 0 1 0 0 0 0)
 ```
 
 
-<a id="orge2835c4"></a>
+<a id="org44ee361"></a>
 
 ### Draw the current state
 
-The `draw` function prints the current state. Whenever it's called, it prints a line with either `█` or a space for each cell in the generation.
+The `draw` function prints the current state. Whenever it&rsquo;s called, it prints a line with either `█` or a space for each cell in the generation.
 
 ```bash
 live="█"
@@ -107,30 +133,30 @@ To draw the current `state`, pass it to the `draw()` function as an array.
 draw "${state[@]}"
 ```
 
-With the [initial state](#org053b775) state, the `draw()` function prints a single box in the middle of the screen to represent a single living cell.
+With the [initial state](#orge8378ec) state, the `draw()` function prints a single box in the middle of the screen to represent a single living cell.
 
 ```
 ░░░░█░░░░
 ```
 
 
-<a id="orgab8583d"></a>
+<a id="org3ae546c"></a>
 
 ### Calculate cell values
 
-To determine the next state of a cell, the program considers the cell's *neighborhood* in the previous generation. In the elementary cellular automaton, a cell's neighborhood consists of the cell in the same position in the previous generation, and the cell on the left and right of it.
+To determine the next state of a cell, the program considers the cell&rsquo;s *neighborhood* in the previous generation. In the elementary cellular automaton, a cell&rsquo;s neighborhood consists of the cell in the same position in the previous generation, and the cell on the left and right of it.
 
 ```bash
 neighborhood=$((state[i-1]))$((state[i]))$((${state[i+1]:-${state[0]}}))
 ```
 
-When determining the state of the 5th cell in the second generation, the 4th, 5th and 6th cell in the previous generation are considered its neighborhood. For example, using the [initial state](#org053b775), calculating the neighborhood for the 5th element of the second generation:
+When determining the state of the 5th cell in the second generation, the 4th, 5th and 6th cell in the previous generation are considered its neighborhood. For example, using the [initial state](#orge8378ec), calculating the neighborhood for the 5th element of the second generation:
 
     010
 
 After finding the neighborhood, a *rule* is applied to decide what the next state should be.
 
-There are 256 rules in the elementary cellular automaton, each one derived from is binary representation. To extract the rule set, the rule number is converted to binary, split into an array, and finally reversed.
+There are [256 rules](https://plato.stanford.edu/entries/cellular-automata/supplement.html) in the elementary cellular automaton, each one derived from is binary representation. To extract the rule set, the rule number is converted to binary, split into an array, and finally reversed.
 
 ```bash
 ruleset=(0 0 0 0 0 0 0 0)
@@ -151,13 +177,13 @@ new_state+=("${ruleset[$((2#$neighborhood))]}")
 ```
 
 
-<a id="orgdb11da1"></a>
+<a id="org227a091"></a>
 
 ### Print new generations
 
 Now that we have the logic to create a ruleset from a rule number and a way to calculate new generation cell values, the program can print new generations in a loop. For this, it needs to know which rule to use, and how many generations to print.
 
-By default, one of the 256 rules is chosen at random. The `generations` variable is set to 0, which means the program keeps printing new generations until it's terminated manually. Finally, `delay` variable is set to 0.1, which determines how long the program sleeps between drawing generations.
+By default, one of the 256 rules is chosen at random. The `generations` variable is set to 0, which means the program keeps printing new generations until it&rsquo;s terminated manually. Finally, `delay` variable is set to 0.1, which determines how long the program sleeps between drawing generations.
 
 ```bash
 rule=$((RANDOM % 256))
@@ -203,18 +229,18 @@ done
 ```
 
 
-<a id="org57085e3"></a>
+<a id="orgb84b07a"></a>
 
 ### Hide the cursor
 
 To prevent flickering while drawing, the program hides the cursor before printing the first generation. Then, right before exiting, the cursor is set back to normal.
 
 ```bash
-function hide-cursor() {
+hide-cursor() {
     tput civis
 }
 
-function show-cursor() {
+show-cursor() {
     tput cnorm
 }
 
@@ -223,7 +249,7 @@ hide-cursor
 ```
 
 
-<a id="org17fb00b"></a>
+<a id="org9fef3f7"></a>
 
 ## Testing
 
