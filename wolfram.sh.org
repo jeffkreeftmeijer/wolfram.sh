@@ -1,3 +1,40 @@
+* Usage
+
+#+begin_src bash
+./wolfram.sh [options]
+#+end_src
+
+- ~-r~ :: Which [[https://atlas.wolfram.com/01/01/rulelist.html][rule]] to use in the simulation.
+              Defaults to choosing a random rule.
+- ~-w~ :: The /width/ of the simulation.
+              Defaults to the number of columns in the terminal.
+- ~-g~ :: The number of /generations/ printed.
+              Produces generations indefinitely by default.
+- ~-d~ :: The /delay/ before printing the next generation.
+              Defaults to 0.1 seconds.
+
+#+caption: An example. Print 10 generations of rule 30 in a 20-column wide simulation without a delay.
+#+headers: :exports both
+#+headers: :results verbatim
+#+headers: :cache yes
+#+begin_src bash
+./wolfram.sh -r 30 -w 20 -g 10 -d 0
+#+end_src
+
+#+RESULTS[9caca806c43cfaaa3503e69186b367fc5ecb9665]:
+#+begin_example
+          █         
+         ███        
+        ██  █       
+       ██ ████      
+      ██  █   █     
+     ██ ████ ███    
+    ██  █    █  █   
+   ██ ████  ██████  
+  ██  █   ███     █ 
+ ██ ████ ██  █   ███
+#+end_example
+
 * Implementation
 
 ** Set the initial state
