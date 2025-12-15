@@ -6,7 +6,7 @@
 #+date: 2025-12-15
 #+options: ':t toc:nil
 
-An [[https://en.wikipedia.org/wiki/Elementary_cellular_automaton][elementary cellular automaton]], implemented as a shell script.
+An [[https://en.wikipedia.org/wiki/Elementary_cellular_automaton][elementary cellular automaton]], based on the [[https://en.wikipedia.org/wiki/Wolfram_code][Wolfram code]] and implemented as a shell script.
 
 #+toc: headlines
 
