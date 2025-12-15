@@ -7,11 +7,11 @@ setup() {
 }
 
 @test "prints the first generation" {
-    run wolfram.sh -w 3 -g 1 -d 0
-    assert_output ' █ '
+    run wolfram.sh -w 3 -g 1
+    assert_output --partial ' █ '
 }
 
 @test "prints multiple generations" {
-    run wolfram.sh -w 5 -g 3 -r 30 -d 0
-    assert_output $'  █  \n ███ \n██  █'
+    run wolfram.sh -w 5 -g 3 -r 30
+    assert_output --partial $'  █  \n ███ \n██  █'
 }

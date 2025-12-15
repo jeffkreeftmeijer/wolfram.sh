@@ -8,6 +8,17 @@ draw() {
     printf "%b" "${line}"
 }
 
+hide-cursor() {
+    tput civis
+}
+
+show-cursor() {
+    tput cnorm
+}
+
+trap show-cursor EXIT
+hide-cursor
+
 width=$(tput cols)
 live="█"
 dead=" "

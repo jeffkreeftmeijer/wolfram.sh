@@ -242,6 +242,25 @@ while [ "$generations" = 0 ] || [ $count -lt "$generations" ]; do
 done
 #+end_src
 
+* Hide the cursor
+
+To prevent flickering while drawing, the program hides the cursor before printing the first generation.
+Then, right before exiting, the cursor is set back to normal.
+
+#+name: hide-cursor
+#+begin_src bash
+hide-cursor() {
+    tput civis
+}
+
+show-cursor() {
+    tput cnorm
+}
+
+trap show-cursor EXIT
+hide-cursor
+#+end_src
+
 * Testing
 
 The program is tested with [[https://github.com/bats-core/bats-core][bats]], a testing framework for bash.
@@ -260,6 +279,8 @@ To run the tests, evaluate ~test.bats~.
 #!/usr/bin/env bash
 
 <<define-draw-function>>
+
+<<hide-cursor>>
 
 <<define-width-variable>>
 <<define-live-and-dead-variables>>
