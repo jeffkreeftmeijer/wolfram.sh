@@ -1,0 +1,20 @@
+name: README.md
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v31
+      - run: nix run github:jeffkreeftmeijer/readme.el -- wolfram.sh.org README.md
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Regenerate README.md
