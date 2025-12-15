@@ -1,4 +1,6 @@
-* Set the initial state
+* Implementation
+
+** Set the initial state
 
 The simulation emerges from an initial configuration of cells, which represent the first generation.
 Because the elementary cellular automaton is one-dimensional, its state can be represented as an array.
@@ -56,7 +58,7 @@ echo "(${state[@]})"
 (0 0 0 0 1 0 0 0 0)
 #+end_example
 
-* Draw the current state
+** Draw the current state
 
 The ~draw~ function prints the current state.
 Whenever it's called, it prints a line with either ~█~ or a space for each cell in the generation.
@@ -121,7 +123,7 @@ dead="░"
 ░░░░█░░░░
 #+end_example
 
-* Calculate cell values
+** Calculate cell values
 
 To determine the next state of a cell, the program considers the cell's /neighborhood/ in the previous generation.
 In the elementary cellular automaton, a cell's neighborhood consists of the cell in the same position in the previous generation, and the cell on the left and right of it.
@@ -186,7 +188,7 @@ This is done by converting the neighborhood to a decimal value, and using that v
 new_state+=("${ruleset[$((2#$neighborhood))]}")
 #+end_src
 
-* Print new generations
+** Print new generations
 
 Now that we have the logic to create a ruleset from a rule number and a way to calculate new generation cell values, the program can print new generations in a loop.
 For this, it needs to know which rule to use, and how many generations to print.
@@ -242,7 +244,7 @@ while [ "$generations" = 0 ] || [ $count -lt "$generations" ]; do
 done
 #+end_src
 
-* Hide the cursor
+** Hide the cursor
 
 To prevent flickering while drawing, the program hides the cursor before printing the first generation.
 Then, right before exiting, the cursor is set back to normal.
