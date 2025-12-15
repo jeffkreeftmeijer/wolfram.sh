@@ -216,7 +216,7 @@ echo "${neighborhood}"
 
 After finding the neighborhood, a /rule/ is applied to decide what the next state should be.
 
-There are 256 rules in the elementary cellular automaton, each one derived from is binary representation.
+There are [[https://plato.stanford.edu/entries/cellular-automata/supplement.html][256 rules]] in the elementary cellular automaton, each one derived from is binary representation.
 To extract the rule set, the rule number is converted to binary, split into an array, and finally reversed.
 
 #+name: set-ruleset
