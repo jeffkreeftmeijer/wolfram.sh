@@ -4,12 +4,23 @@ The simulation emerges from an initial configuration of cells, which represent t
 Because the elementary cellular automaton is one-dimensional, its state can be represented as an array.
 
 To generate an initial state, first determine the width of the simulation.
-In this case, call ~tput cols~ to get the number of columns in the terminal window.
 
 #+caption: Define the ~width~ variable, and set it to the number of columns in the terminal window.
 #+name: define-width-variable
 #+begin_src bash
 width=$(tput cols)
+#+end_src
+
+The width is set to the number of columns in the terminal window, but it can be configured with the ~-w~ flag.
+
+#+name: command-line-options
+#+begin_src bash
+while getopts "w:" flag; do
+    case "$flag" in
+	'w') width=$OPTARG;;
+	*) exit
+    esac
+done
 #+end_src
 
 With the ~width~ set, generate the initial state by populating an array with zeroes.
@@ -120,22 +131,6 @@ To run the tests, evaluate ~test.bats~.
 ./test.bats
 #+end_src
 
-** Command line options for testing
-
-The program includes command line options to aid with testing.
-
-The ~-w~ option sets the ~width~ variable, which represents the width of the simulation for scenarios where the width can't be determined automatically, or when it's inconvenient to do so.
-
-#+name: command-line-options-for-testing
-#+begin_src bash
-while getopts "w:" flag; do
-    case "$flag" in
-	'w') width=$OPTARG;;
-	*) exit
-    esac
-done
-#+end_src
-
 * Result :noexport:
 
 #+header: :noweb yes
@@ -149,7 +144,7 @@ done
 <<define-width-variable>>
 <<define-live-and-dead-variables>>
 
-<<command-line-options-for-testing>>
+<<command-line-options>>
 
 <<set-initial-state>>
 
